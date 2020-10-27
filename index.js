@@ -20,7 +20,7 @@ console.log("in")
      temp={'action':'L'}
      resp.end(JSON.stringify(temp))
  })
-   //app.listen(process.env.PORT || 3000)
-   app.listen(3000)
+   app.listen(process.env.PORT || 3000)
+   //app.listen(3000)
 
 
