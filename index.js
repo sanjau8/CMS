@@ -15,6 +15,11 @@
 console.log("in")
  var express = require('express')
  var app = express()
+ 
+ app.get('/',function(req,resp){
+     
+     resp.end("Hey")
+ })
 
  app.get('/car',function(req,resp){
      temp={'action':'L'}
