@@ -12,18 +12,41 @@
 //     console.log("Connected!");
 //   });
 
-console.log("in")
+
  var express = require('express')
  var app = express()
- 
- app.get('/',function(req,resp){
-     
-     resp.end("Hey")
- })
+
+ const NodeCache = require( "node-cache" );
+const myCache = new NodeCache({maxKeys:50});
+
 
  app.get('/car',function(req,resp){
-     temp={'action':'L'}
-     resp.end(JSON.stringify(temp))
+  value = myCache.get( "move" );
+  if ( value == undefined ){
+    var move="L+5+R+10+L+2"
+
+    value=move+"+_"
+    
+    myCache.set("move",value)
+      
+  }
+
+  arr=value.split("+")
+  temp={'action':arr[0]}
+  if(arr[0]=="_"){
+    myCache.del("move")
+  }
+  else{
+  arr.shift()
+
+  value=arr.join("+")
+  myCache.set("move",value)
+  
+  }
+  resp.end(JSON.stringify(temp))
+
+
+  
  })
    app.listen(process.env.PORT || 3000)
    //app.listen(3000)
