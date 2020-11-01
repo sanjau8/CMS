@@ -65,8 +65,8 @@ clients={};
   });
   ws.on('error',function(){
    console.log("in error")
-   ws.OPEN=1
-   ws.send("in error")
+   
+   expressWs.emit('upgrade');
   });
   
 });
@@ -85,8 +85,8 @@ expressWs.getWss().on('ping', function(ws) {
 });
 
 expressWs.getWss().on('upgrade', (request, socket, head) => {
-  wsServer.handleUpgrade(request, socket, head, socket => {
-    wsServer.emit('connection', socket, request);
+  expressWs.handleUpgrade(request, socket, head, socket => {
+    expressWs.emit('connection', socket, request);
   });
 });
 
