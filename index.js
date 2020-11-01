@@ -65,6 +65,7 @@ clients={};
   });
   ws.on('error',function(){
    console.log("in error")
+   ws.OPEN=1
    ws.send("in error")
   });
   
