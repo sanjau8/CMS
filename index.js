@@ -64,20 +64,23 @@ clients={};
     console.log(msg);
   });
   ws.on('error',function(){
-   ws.send("okk")
+   console.log("in error")
+   ws.send("in error")
   });
   
 });
 
 
 expressWs.getWss().on('connection', function(ws) {
+ console.log('in connection');
   ws.send("connection successful")
-  console.log('connection open');
+  
 });
 
 expressWs.getWss().on('handshake', function(ws) {
+  console.log('in handshake');
   ws.send("connection successful")
-  console.log('connection open');
+ 
 });
 
   app.listen(process.env.PORT || 3000)
