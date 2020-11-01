@@ -84,5 +84,11 @@ expressWs.getWss().on('ping', function(ws) {
  
 });
 
+expressWs.getWss().on('upgrade', (request, socket, head) => {
+  wsServer.handleUpgrade(request, socket, head, socket => {
+    wsServer.emit('connection', socket, request);
+  });
+});
+
   app.listen(process.env.PORT || 3000)
   // app.listen(3000)
