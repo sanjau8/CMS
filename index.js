@@ -63,10 +63,20 @@ clients={};
   ws.on('message', function(msg) {
     console.log(msg);
   });
-  ws.on('connection',function(){
-    ws.send("connection successful")
-  })
+  
   
 });
+
+
+expressWs.getWss().on('connection', function(ws) {
+  ws.send("connection successful")
+  console.log('connection open');
+});
+
+expressWs.getWss().on('handshake', function(ws) {
+  ws.send("connection successful")
+  console.log('connection open');
+});
+
   app.listen(process.env.PORT || 3000)
   // app.listen(3000)
