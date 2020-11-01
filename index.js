@@ -15,7 +15,7 @@ clients={};
   
     var move=req.query.path
 
-    var value=move+"+_"
+    var value=move+"-_"
     
     myCache.set("move",value)
       
@@ -28,7 +28,7 @@ clients={};
   value=arr.join("-")
   myCache.set("move",value)
   
-  clients['car'].send(temp['action'])
+  
 
   
  })
@@ -36,6 +36,12 @@ clients={};
  app.get("/car",function(req,res){
 
   var value=myCache.get("move")
+  
+  if(value==undefined){
+   temp={'action':"$"}
+   res.end(JSON.stringify(temp))
+  }
+  else{
   arr=value.split("-")
   temp={'action':arr[0]}
   if(arr[0]=="_"){
@@ -50,7 +56,7 @@ clients={};
 
   res.end(JSON.stringify(temp))
   clients['app'].send(temp['action'])
-
+  }
 
  });
 
