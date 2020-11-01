@@ -1,4 +1,19 @@
-var express = require('express')
+// var mysql = require('mysql');
+
+// var con = mysql.createConnection({
+//     host: 'remotemysql.com:3306',
+//     user: "OBvpHD7CSf",
+//     password: "vlYNAQGrdf",
+//     database:"OBvpHD7CSf"
+//   });
+  
+//   con.connect(function(err) {
+//     if (err) throw err;
+//     console.log("Connected!");
+//   });
+
+
+ var express = require('express')
  var app = express()
 
  const NodeCache = require("node-cache" );
@@ -18,30 +33,21 @@ clients={};
     var value=move+"-_"
     
     myCache.set("move",value)
-      
+    temp={'action':"path chosen"}
+    resp.end(JSON.stringify(temp))
   
-    arr=value.split("-")
-  
-  temp={'action':arr[0]}
-  resp.end(JSON.stringify(temp))
-  arr.shift()
-  value=arr.join("-")
-  myCache.set("move",value)
-  
-  
-
+    
   
  })
 
  app.get("/car",function(req,res){
 
   var value=myCache.get("move")
-  
   if(value==undefined){
-   temp={'action':"$"}
-   res.end(JSON.stringify(temp))
-  }
-  else{
+    temp={'action':"$"}
+    res.end(JSON.stringify(temp))
+   }
+   else{
   arr=value.split("-")
   temp={'action':arr[0]}
   if(arr[0]=="_"){
@@ -56,8 +62,8 @@ clients={};
 
   res.end(JSON.stringify(temp))
   clients['app'].send(temp['action'])
-  }
 
+   }
  });
 
 
@@ -65,36 +71,24 @@ clients={};
 
   var user=req.query.user
   clients[user]=ws
+
   
   ws.on('message', function(msg) {
     console.log(msg);
   });
-  ws.on('error',function(){
-   console.log("in error")
-   
-   expressWs.emit('upgrade');
-  });
   
-});
 
+  
+
+});
 
 expressWs.getWss().on('connection', function(ws) {
- console.log('in connection');
   ws.send("connection successful")
-  
+  console.log('connection open');
 });
 
-expressWs.getWss().on('ping', function(ws) {
-  console.log('in handshake');
-  ws.send("connection successful")
- 
-});
-
-expressWs.getWss().on('upgrade', (request, socket, head) => {
-  expressWs.handleUpgrade(request, socket, head, socket => {
-    expressWs.emit('connection', socket, request);
-  });
-});
 
   app.listen(process.env.PORT || 3000)
   // app.listen(3000)
+
+
