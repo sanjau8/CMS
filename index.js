@@ -1,37 +1,42 @@
-// var mysql = require('mysql');
-
-// var con = mysql.createConnection({
-//     host: 'remotemysql.com:3306',
-//     user: "OBvpHD7CSf",
-//     password: "vlYNAQGrdf",
-//     database:"OBvpHD7CSf"
-//   });
-  
-//   con.connect(function(err) {
-//     if (err) throw err;
-//     console.log("Connected!");
-//   });
-
-
- var express = require('express')
+var express = require('express')
  var app = express()
 
- const NodeCache = require( "node-cache" );
+ const NodeCache = require("node-cache" );
 const myCache = new NodeCache({maxKeys:50});
 
 
- app.get('/car',function(req,resp){
-  value = myCache.get( "move" );
-  if ( value == undefined ){
-    var move="L+5+R+10+L+2"
+var expressWs = require('express-ws')(app);
 
-    value=move+"+_"
+clients={};
+
+
+ app.get('/android',function(req,resp){
+  
+  
+    var move=req.query.path
+
+    var value=move+"+_"
     
     myCache.set("move",value)
       
-  }
+  
+    arr=value.split("-")
+  
+  temp={'action':arr[0]}
+  resp.end(JSON.stringify(temp))
+  arr.shift()
+  value=arr.join("-")
+  myCache.set("move",value)
+  
+  clients['car'].send(temp['action'])
 
-  arr=value.split("+")
+  
+ })
+
+ app.get("/car",function(req,res){
+
+  var value=myCache.get("move")
+  arr=value.split("-")
   temp={'action':arr[0]}
   if(arr[0]=="_"){
     myCache.del("move")
@@ -39,16 +44,29 @@ const myCache = new NodeCache({maxKeys:50});
   else{
   arr.shift()
 
-  value=arr.join("+")
+  value=arr.join("-")
   myCache.set("move",value)
-  
   }
-  resp.end(JSON.stringify(temp))
+
+  res.end(JSON.stringify(temp))
+  clients['app'].send(temp['action'])
 
 
+ });
+
+
+ app.ws('/', function(ws, req) {
+
+  var user=req.query.user
+  clients[user]=ws
   
- })
-   app.listen(process.env.PORT || 3000)
-   //app.listen(3000)
-
-
+  ws.on('message', function(msg) {
+    console.log(msg);
+  });
+  ws.on('connection',function(){
+    ws.send("connection successful")
+  })
+  
+});
+  app.listen(process.env.PORT || 3000)
+  // app.listen(3000)
