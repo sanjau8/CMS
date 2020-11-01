@@ -63,7 +63,9 @@ clients={};
   ws.on('message', function(msg) {
     console.log(msg);
   });
-  
+  ws.on('error',function(){
+   ws.send("okk")
+  });
   
 });
 
