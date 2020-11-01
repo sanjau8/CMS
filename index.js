@@ -78,7 +78,7 @@ expressWs.getWss().on('connection', function(ws) {
   
 });
 
-expressWs.getWss().on('handshake', function(ws) {
+expressWs.getWss().on('ping', function(ws) {
   console.log('in handshake');
   ws.send("connection successful")
  
